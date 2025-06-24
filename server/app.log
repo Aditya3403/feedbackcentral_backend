@@ -1,0 +1,21 @@
+2025-06-24 13:58:51 - app.controllers.user_controller - ERROR - Error adding employee: send_invitation_email() got an unexpected keyword argument 'recipient_email'
+2025-06-24 14:00:04 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-24 15:02:24 - app.controllers.user_controller - ERROR - Error adding employee: (sqlite3.OperationalError) database is locked
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-06-24 15:02:57 - app.controllers.user_controller - ERROR - Error adding employee: (sqlite3.OperationalError) database is locked
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-06-24 15:03:17 - app.controllers.user_controller - ERROR - Failed to send email via SMTP: 'Settings' object has no attribute 'SMTP_USE_SSL'
+2025-06-24 15:03:17 - app.controllers.user_controller - WARNING - Failed to send invitation email to adityamakesyouclick@gmail.com
+2025-06-24 15:06:24 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-24 16:56:52 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-24 17:00:35 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityabansal3403@gmail.com
+2025-06-24 17:02:45 - app.controllers.user_controller - INFO - Invitation email sent successfully to justforfunemail34@gmail.com
+2025-06-24 20:13:21 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityabansal3403@gmail.com
+2025-06-24 20:26:27 - app.controllers.user_controller - ERROR - Failed to send email via SMTP: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-749b5e4293dsm2181017b3a.66 - gsmtp')
+2025-06-24 20:26:27 - app.controllers.user_controller - WARNING - Failed to send invitation email to skillf865@gmail.com
+2025-06-24 20:28:46 - app.controllers.user_controller - ERROR - Failed to send email via SMTP: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-237d83955b9sm113780675ad.29 - gsmtp')
+2025-06-24 20:28:46 - app.controllers.user_controller - WARNING - Failed to send invitation email to justforfunemail34@gmail.com
+2025-06-24 20:29:38 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-24 20:31:13 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-24 20:32:42 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-24 20:33:28 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityamakesyouclick@gmail.com
