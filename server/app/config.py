@@ -28,4 +28,5 @@ class Settings:
     # Email service preference
     USE_SENDGRID: bool = os.getenv("USE_SENDGRID", "false").lower() == "true"
 
+
 settings = Settings()

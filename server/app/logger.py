@@ -35,5 +35,6 @@ def configure_logging():
             },
         }
     }
+    
 
     dictConfig(logging_config)

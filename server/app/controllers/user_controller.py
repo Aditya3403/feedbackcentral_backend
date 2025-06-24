@@ -376,6 +376,7 @@ async def validate_invitation_token(token: str, db: Session):
     
     return db_employee
 
+
 async def set_employee_password(password_data: SetPasswordRequest, db: Session):
     # Validate passwords match
     if password_data.new_password != password_data.confirm_password:

@@ -24,6 +24,7 @@ class Sentiment(enum.Enum):
     NEUTRAL = "neutral"
     NEGATIVE = "negative"
 
+
 class Manager(Base):
     __tablename__ = "managers"
 

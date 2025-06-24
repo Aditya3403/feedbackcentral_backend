@@ -49,10 +49,3 @@ async def set_password(password_data: SetPasswordRequest, db: Session = Depends(
 async def get_employees_route(manager_id: int, db: Session = Depends(get_db)):
     return await get_employees(manager_id, db)
 
-# @router.get("/users/{user_id}", response_model=UserResponse)
-# async def read_user(user_id: str, db: Session = Depends(get_db)):
-#     return await get_user(user_id, db)
-
-# @router.get("/me", response_model=UserResponse)
-# async def get_current_user(user_id: str, db: Session = Depends(get_db)):
-#     return await get_user(user_id, db)
