@@ -15,16 +15,9 @@ class ManagerResponse(ManagerBase):
     id: int
     company: str
     department: str
-    employees: List[Dict[str, str]] = []  # Format: [{"employee_name": str, "employee_email": str}]
+    employees: List[Dict[str, str]] = []  
     given_feedbacks: List[Dict[str, Union[str, datetime]]] = Field(default_factory=list)  
-    # Format: [{
-    #   "employee_name": str,
-    #   "employee_email": str,
-    #   "strengths": str,
-    #   "areas_to_improve": str,
-    #   "overall_sentiment": str,
-    #   "created_at": datetime
-    # }]  # Changed to default_factory
+
 
 class EmployeeBase(BaseModel):
     email: EmailStr
@@ -39,16 +32,9 @@ class EmployeeResponse(EmployeeBase):
     id: int
     company: str
     department: str
-    managers: List[Dict[str, str]] = Field(default_factory=list)  # Format: [{"manager_name": str, "manager_email": str}]
+    managers: List[Dict[str, str]] = Field(default_factory=list) 
     received_feedbacks: List[Dict[str, Union[str, datetime]]] = Field(default_factory=list)
-    # Format: [{
-    #   "manager_name": str,
-    #   "manager_email": str,
-    #   "strengths": str,
-    #   "areas_to_improve": str,
-    #   "overall_sentiment": str,
-    #   "created_at": datetime
-    # }]
+ 
 class ManagerShort(BaseModel):
     id: int
     email: EmailStr
@@ -74,7 +60,6 @@ class LoginResponse(BaseModel):
     user_type: str
     user: ManagerResponse | EmployeeResponse
     
-# Add these new schemas
 class InvitationResponse(BaseModel):
     success: bool
     message: str

@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.pool import StaticPool
 from datetime import datetime
 import enum
+from enum import Enum as PyEnum
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
 
@@ -20,10 +21,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 class Sentiment(enum.Enum):
-    POSITIVE = "positive"
-    NEUTRAL = "neutral"
-    NEGATIVE = "negative"
+    POSITIVE = "POSITIVE"
+    NEUTRAL = "NEUTRAL"
+    NEGATIVE = "NEGATIVE"
 
+class FeedbackStatus(str, PyEnum):
+    PENDING = "PENDING"
+    ACKNOWLEDGED = "ACKNOWLEDGED"
 
 class Manager(Base):
     __tablename__ = "managers"
@@ -75,6 +79,8 @@ class Feedback(Base):
     # Optional foreign keys (not exposed in API)
     manager_id = Column(Integer, ForeignKey('managers.id'), nullable=True)
     employee_id = Column(Integer, ForeignKey('employees.id'), nullable=True)
+    
+    status = Column(Enum(FeedbackStatus), default=FeedbackStatus.PENDING, nullable=False)
     
 def get_db():
     db = SessionLocal()

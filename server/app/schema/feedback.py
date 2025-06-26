@@ -4,10 +4,15 @@ from datetime import datetime
 from typing import Optional
 from enum import Enum
 
+class AcknowledgeFeedbackRequest(BaseModel):
+    feedback_id: str
+    employee_id: int
+    
+
 class Sentiment(str, Enum):
-    POSITIVE = "positive"
-    NEUTRAL = "neutral"
-    NEGATIVE = "negative"
+    POSITIVE = "POSITIVE" 
+    NEUTRAL = "NEUTRAL"    
+    NEGATIVE = "NEGATIVE"  
 
 class FeedbackBase(BaseModel):
     strengths: str
@@ -26,6 +31,7 @@ class FeedbackResponse(FeedbackBase):
     employee_name: str
     employee_email: EmailStr
     created_at: datetime
+    status: Optional[str] = None
 
     class Config:
         orm_mode = True

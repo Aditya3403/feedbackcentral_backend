@@ -423,12 +423,19 @@ async def get_employees(manager_id: int, db: Session):
                 Feedback.manager_id == manager_id,
                 Feedback.employee_id == emp.id
             ).count()
+            latest_feedback = db.query(Feedback.status).filter(
+                Feedback.manager_id == manager_id,
+                Feedback.employee_id == emp.id
+            ).order_by(Feedback.created_at.desc()).first()
+            
+            status = latest_feedback[0].value if latest_feedback else None
             
             employees_with_feedback.append({
                 "id": emp.id,
                 "full_name": emp.full_name,
                 "email": emp.email,
-                "feedback_count": feedback_count
+                "feedback_count": feedback_count,
+                "feedback_status": status
             })
         
         return {

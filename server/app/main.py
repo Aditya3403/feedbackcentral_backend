@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.sqlite_db import engine, Base
-from app.routes import user_routes
+from app.routes import user_routes, feedback_routes
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -18,3 +18,4 @@ app.add_middleware(
 
 
 app.include_router(user_routes.router)
+app.include_router(feedback_routes.router)
