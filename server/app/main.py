@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database.sqlite_db import engine, Base
 from app.routes import user_routes, feedback_routes
 
-# Create tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()

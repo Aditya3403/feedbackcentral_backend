@@ -1,4 +1,3 @@
-# feedback.py
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
@@ -34,4 +33,11 @@ class FeedbackResponse(FeedbackBase):
     status: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True 
+
+class FeedbackUpdate(BaseModel):
+    strengths: Optional[str] = None
+    areas_to_improve: Optional[str] = None
+    overall_sentiment: Optional[Sentiment] = None
+    
+    

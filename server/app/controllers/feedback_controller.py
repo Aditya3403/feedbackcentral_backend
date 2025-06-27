@@ -3,13 +3,10 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from datetime import datetime
 from ..database import get_db
-from ..database.sqlite_db import Feedback, Manager, Employee, FeedbackStatus # Direct imports
-from ..schema.feedback import FeedbackCreate, FeedbackResponse
+from ..database.sqlite_db import Feedback, Manager, Employee, FeedbackStatus
+from ..schema.feedback import FeedbackCreate, FeedbackResponse, FeedbackUpdate
 
 async def create_feedback(feedback_data: FeedbackCreate, db: Session = Depends(get_db)):
-    """
-    Create new feedback for an employee from a manager
-    """
     try:
         # Validate manager exists
         db_manager = db.query(Manager).filter(
@@ -76,100 +73,8 @@ async def create_feedback(feedback_data: FeedbackCreate, db: Session = Depends(g
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error creating feedback: {str(e)}"
         )
-
-async def get_feedbacks_by_employee(employee_id: int, db: Session = Depends(get_db)):
-    """
-    Get all feedbacks for a specific employee
-    """
-    db_employee = db.query(Employee).filter(
-        Employee.id == employee_id
-    ).first()
-    
-    if not db_employee:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Employee not found"
-        )
-
-    feedbacks = db.query(Feedback).filter(
-        Feedback.employee_id == employee_id
-    ).order_by(Feedback.created_at.desc()).all()
-
-    return [
-        FeedbackResponse(
-            id=fb.id,
-            strengths=fb.strengths,
-            areas_to_improve=fb.areas_to_improve,
-            overall_sentiment=fb.overall_sentiment,
-            manager_id=fb.manager_id,
-            employee_id=fb.employee_id,
-            manager_name=fb.manager_name,
-            manager_email=fb.manager_email,
-            employee_name=fb.employee_name,
-            employee_email=fb.employee_email,
-            created_at=fb.created_at
-        )
-        for fb in feedbacks
-    ]
-
-async def get_feedbacks_by_manager(
-    manager_id: int, 
-    employee_id: Optional[int] = None, 
-    db: Session = Depends(get_db)
-):
-    """
-    Get all feedbacks given by a specific manager, optionally filtered by employee
-    """
-    db_manager = db.query(Manager).filter(
-        Manager.id == manager_id
-    ).first()
-    
-    if not db_manager:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Manager not found"
-        )
-
-    query = db.query(Feedback).filter(
-        Feedback.manager_id == manager_id
-    )
-
-    if employee_id:
-        # Validate employee exists
-        db_employee = db.query(Employee).filter(
-            Employee.id == employee_id
-        ).first()
-        if not db_employee:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Employee not found"
-            )
-        query = query.filter(Feedback.employee_id == employee_id)
-
-    feedbacks = query.order_by(Feedback.created_at.desc()).all()
-
-    return [
-        FeedbackResponse(
-            id=fb.id,
-            strengths=fb.strengths,
-            areas_to_improve=fb.areas_to_improve,
-            overall_sentiment=fb.overall_sentiment,
-            manager_id=fb.manager_id,
-            employee_id=fb.employee_id,
-            manager_name=fb.manager_name,
-            manager_email=fb.manager_email,
-            employee_name=fb.employee_name,
-            employee_email=fb.employee_email,
-            created_at=fb.created_at
-        )
-        for fb in feedbacks
-    ]
     
 async def get_employee_feedbacks(employee_id: int, db: Session):
-    """
-    Fetch all feedback details for an employee exactly as stored in DB
-    Returns: List[FeedbackResponse] with all original fields separated
-    """
     feedbacks = db.query(Feedback).filter(
         Feedback.employee_id == employee_id
     ).order_by(Feedback.created_at.desc()).all()
@@ -184,9 +89,7 @@ async def acknowledge_feedback(
     employee_id: int,
     db: Session = Depends(get_db)
 ):
-    """
-    Acknowledge a specific feedback by changing its status from PENDING to ACKNOWLEDGED
-    """
+
     try:
         # Find the feedback
         db_feedback = db.query(Feedback).filter(
@@ -218,4 +121,68 @@ async def acknowledge_feedback(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error acknowledging feedback: {str(e)}"
+        )
+        
+async def update_feedback(
+    feedback_id: str,
+    feedback_data: FeedbackUpdate,
+    db: Session = Depends(get_db)
+):
+    try:
+        try:
+            feedback_id_int = int(feedback_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Feedback ID must be an integer"
+            )
+
+        db_feedback = db.query(Feedback).filter(
+            Feedback.id == feedback_id_int
+        ).first()
+        
+        if not db_feedback:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Feedback not found"
+            )
+
+        if feedback_data.strengths is not None:
+            db_feedback.strengths = feedback_data.strengths
+        if feedback_data.areas_to_improve is not None:
+            db_feedback.areas_to_improve = feedback_data.areas_to_improve
+        if feedback_data.overall_sentiment is not None:
+            db_feedback.overall_sentiment = feedback_data.overall_sentiment.value
+
+        db.commit()
+        db.refresh(db_feedback)
+
+        response_data = {
+            "id": db_feedback.id,
+            "strengths": db_feedback.strengths,
+            "areas_to_improve": db_feedback.areas_to_improve,
+            "overall_sentiment": db_feedback.overall_sentiment.value,
+            "manager_id": db_feedback.manager_id,
+            "employee_id": db_feedback.employee_id,
+            "manager_name": db_feedback.manager_name,
+            "manager_email": db_feedback.manager_email,
+            "employee_name": db_feedback.employee_name,
+            "employee_email": db_feedback.employee_email,
+            "created_at": db_feedback.created_at,
+            "status": db_feedback.status.value if db_feedback.status else None
+        }
+
+        return {
+            "success": True,
+            "message": "Feedback updated successfully",
+            "feedback": FeedbackResponse(**response_data)
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error updating feedback: {str(e)}"
         )

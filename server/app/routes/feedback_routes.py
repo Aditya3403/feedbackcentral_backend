@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database.sqlite_db import get_db
-from app.schema.feedback import FeedbackCreate, FeedbackResponse, AcknowledgeFeedbackRequest
+from app.schema.feedback import FeedbackCreate, FeedbackResponse, AcknowledgeFeedbackRequest, FeedbackUpdate
 from ..database.sqlite_db import Feedback, Manager
 from typing import Optional
 from app.controllers.feedback_controller import (
     create_feedback,
-    get_feedbacks_by_employee,
-    get_feedbacks_by_manager,
     get_employee_feedbacks,
-    acknowledge_feedback
+    acknowledge_feedback,
+    update_feedback
 )
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -22,14 +21,7 @@ async def get_complete_employee_feedback(
     employee_id: int,
     db: Session = Depends(get_db)
 ):
-    """
-    Get all feedback for an employee with all fields separated
-    Returns:
-    - strengths (original)
-    - areas_to_improve (original)
-    - overall_sentiment (original)
-    - All other fields exactly as in schema
-    """
+    
     try:
         feedbacks = await get_employee_feedbacks(employee_id, db)
         return feedbacks
@@ -47,7 +39,7 @@ async def get_manager_feedbacks(
     db: Session = Depends(get_db)
 ):
     """
-    Get all feedbacks given by a specific manager, optionally filtered by employee
+    Get all feedbacks given by a specific manager
     """
     db_manager = db.query(Manager).filter(
         Manager.id == manager_id
@@ -88,7 +80,15 @@ async def get_manager_feedbacks(
     
 @router.post("/acknowledge-feedback")
 async def acknowledge_feedback_route(
-    request: AcknowledgeFeedbackRequest,  # ⚠️ Now expects a JSON body
+    request: AcknowledgeFeedbackRequest,
     db: Session = Depends(get_db)
 ):
     return await acknowledge_feedback(request.feedback_id, request.employee_id, db)
+
+@router.put("/update-feedback/{feedback_id}")
+async def update_feedback_route(
+    feedback_id: str,
+    feedback_data: FeedbackUpdate,
+    db: Session = Depends(get_db)
+):
+    return await update_feedback(feedback_id, feedback_data, db)

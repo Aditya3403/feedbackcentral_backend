@@ -12,7 +12,7 @@ engine = create_engine(
     SQLALCHEMY_DATABASE_URL, 
     connect_args={
         "check_same_thread": False,
-        "timeout": 30  # Increase timeout to 30 seconds
+        "timeout": 30 
     },
     poolclass=StaticPool
 )
@@ -39,7 +39,6 @@ class Manager(Base):
     company = Column(String)
     department = Column(String)
 
-    # Relationship to employees
     employees = relationship("Employee", back_populates="manager")
 
 class Employee(Base):
@@ -55,10 +54,8 @@ class Employee(Base):
     company = Column(String)
     department = Column(String)
     
-    # Required foreign key (even if we don't expose it)
     manager_id = Column(Integer, ForeignKey('managers.id'), nullable=True)
     
-    # Relationship to manager
     manager = relationship("Manager", back_populates="employees")
 
 class Feedback(Base):
@@ -70,13 +67,11 @@ class Feedback(Base):
     overall_sentiment = Column(Enum(Sentiment))
     created_at = Column(DateTime, default=datetime.utcnow)
     
-    # Direct storage of names/emails
     manager_name = Column(String)
     manager_email = Column(String)
     employee_name = Column(String)
     employee_email = Column(String)
     
-    # Optional foreign keys (not exposed in API)
     manager_id = Column(Integer, ForeignKey('managers.id'), nullable=True)
     employee_id = Column(Integer, ForeignKey('employees.id'), nullable=True)
     

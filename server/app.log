@@ -24,3 +24,9 @@
 2025-06-25 23:11:31 - app.controllers.user_controller - ERROR - Error fetching employees for manager 1: 
 2025-06-25 23:12:47 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityabansal3403@gmail.com
 2025-06-26 19:18:44 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityabansal3403@gmail.com
+2025-06-27 12:39:08 - app.controllers.user_controller - INFO - Invitation email sent successfully to skillf865@gmail.com
+2025-06-27 12:45:26 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-27 12:45:54 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-27 12:46:41 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-27 12:47:45 - app.controllers.user_controller - INFO - Invitation email sent successfully to 211325@juitsolan.in
+2025-06-27 16:00:42 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityamakesyouclick@gmail.com

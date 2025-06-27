@@ -5,7 +5,7 @@ from app.database.sqlite_db import get_db
 from app.controllers.user_controller import (
     create_manager,
     create_employee,
-    get_manager,  # Add these
+    get_manager, 
     get_employee,
     login_user,
     add_employee_to_manager,

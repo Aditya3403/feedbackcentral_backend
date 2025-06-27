@@ -10,11 +10,11 @@ class Settings:
     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
     
-    # Email Configuration - Choose SMTP OR SendGrid
+    # Email Configuration
     EMAIL_FROM: str = os.getenv("EMAIL_FROM", "noreply@gmail.com")
     EMAIL_FROM_NAME: str = os.getenv("EMAIL_FROM_NAME", "FeedbackCentral")
     
-    # SMTP Configuration (for Gmail, Outlook, etc.)
+    # SMTP Configuration
     SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
     SMTP_PORT: int = int(os.getenv("SMTP_PORT", 587))
     SMTP_USERNAME: str = os.getenv("SMTP_USERNAME", "")
@@ -22,11 +22,6 @@ class Settings:
     SMTP_USE_TLS: bool = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
     SMTP_USE_SSL: bool = os.getenv("SMTP_USE_SSL", "false").lower() == "true"
     
-    # SendGrid Configuration (alternative to SMTP)
-    SENDGRID_API_KEY: str = os.getenv("SENDGRID_API_KEY", "")
-    
-    # Email service preference
-    USE_SENDGRID: bool = os.getenv("USE_SENDGRID", "false").lower() == "true"
 
 
 settings = Settings()

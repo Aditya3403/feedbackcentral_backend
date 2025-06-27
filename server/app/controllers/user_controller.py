@@ -41,13 +41,11 @@ def send_invitation_email(email: str, employee_name: str, invitation_link: str):
     Send invitation email using SMTP
     """
     try:
-        # Create message container
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "Invitation to join FeedbackCentral"
         msg['From'] = f"{settings.EMAIL_FROM_NAME} <{settings.EMAIL_FROM}>"
         msg['To'] = email
         
-        # Create the HTML version of your message
         html = f"""\
         <!DOCTYPE html>
         <html>
@@ -111,7 +109,6 @@ def send_invitation_email(email: str, employee_name: str, invitation_link: str):
         </html>
         """
         
-        # Create the plain-text version of your message
         text = f"""\
         Hi {employee_name},
         
@@ -126,15 +123,12 @@ def send_invitation_email(email: str, employee_name: str, invitation_link: str):
         The FeedbackCentral Team
         """
         
-        # Record the MIME types of both parts - text/plain and text/html
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(html, 'html')
         
-        # Attach parts into message container
         msg.attach(part1)
         msg.attach(part2)
         
-        # Create SMTP connection
         if settings.SMTP_USE_SSL:
             server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
         else:
@@ -164,7 +158,6 @@ async def create_manager(manager_data: ManagerCreate, db: Session):
     
     hashed_password = hash_password(manager_data.password)
     
-    # Create manager without initializing relationships
     db_manager = Manager(
         email=manager_data.email,
         password=hashed_password,
@@ -183,8 +176,8 @@ async def create_manager(manager_data: ManagerCreate, db: Session):
         full_name=db_manager.full_name,
         company=db_manager.company,
         department=db_manager.department,
-        employees=[],  # Will be populated when employees are assigned
-        given_feedbacks=[]  # Will be populated when feedback is given
+        employees=[], 
+        given_feedbacks=[] 
     )
 
 async def create_employee(employee_data: EmployeeCreate, db: Session):
@@ -195,7 +188,6 @@ async def create_employee(employee_data: EmployeeCreate, db: Session):
     
     hashed_password = hash_password(employee_data.password)
     
-    # Create employee without initializing relationships
     db_employee = Employee(
         email=employee_data.email,
         password=hashed_password,
@@ -214,8 +206,8 @@ async def create_employee(employee_data: EmployeeCreate, db: Session):
         full_name=db_employee.full_name,
         company=db_employee.company,
         department=db_employee.department,
-        managers=[],  # Will be populated when assigned to manager
-        received_feedbacks=[]  # Will be populated when feedback is received
+        managers=[], 
+        received_feedbacks=[] 
     )
 
 async def get_manager(manager_id: int, db: Session = Depends(get_db)):
@@ -223,13 +215,12 @@ async def get_manager(manager_id: int, db: Session = Depends(get_db)):
     if not db_manager:
         raise HTTPException(status_code=404, detail="Manager not found")
     
-    # Get employees (just name and email)
+    # Get employees
     employees = [
         {"employee_name": emp.full_name, "employee_email": emp.email}
         for emp in db_manager.employees
     ]
     
-    # Get given feedbacks with all required fields
     given_feedbacks = [
         {
             "employee_name": fb.employee_name,
@@ -257,7 +248,7 @@ async def get_employee(employee_id: int, db: Session):
     if not db_employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     
-    # Get manager info (if assigned)
+    # Get manager
     managers = []
     if db_employee.manager:
         managers.append({
@@ -265,7 +256,7 @@ async def get_employee(employee_id: int, db: Session):
             "manager_email": db_employee.manager.email
         })
     
-    # Get received feedbacks with all required fields
+    # Get received feedbacks
     received_feedbacks = [
         {
             "manager_name": fb.manager_name,
@@ -292,7 +283,6 @@ def generate_invitation_token() -> str:
     return str(uuid.uuid4())
 
 def get_invitation_link(token: str) -> str:
-    # In production, use your actual domain
     base_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
     return f"{base_url}/set-password?token={token}"
 
@@ -351,7 +341,7 @@ async def add_employee_to_manager(employee_data: AddEmployeeRequest, db: Session
                 "name": db_employee.full_name,
                 "email": db_employee.email
             },
-            "invitation_link": invitation_link  # For debugging purposes
+            "invitation_link": invitation_link
         }
         
     except Exception as e:
@@ -362,7 +352,6 @@ async def add_employee_to_manager(employee_data: AddEmployeeRequest, db: Session
             detail="Failed to add employee. Please try again."
         )
 
-# Add these new functions
 async def validate_invitation_token(token: str, db: Session):
     db_employee = db.query(Employee).filter(Employee.invitation_token == token).first()
     if not db_employee:
@@ -388,7 +377,7 @@ async def set_employee_password(password_data: SetPasswordRequest, db: Session):
     # Set password
     db_employee.password = hash_password(password_data.new_password)
     db_employee.password_set = True
-    db_employee.invitation_token = None  # Invalidate token after use
+    db_employee.invitation_token = None
     db_employee.token_expires = None
     
     db.commit()
@@ -403,6 +392,7 @@ async def set_employee_password(password_data: SetPasswordRequest, db: Session):
 async def get_employees(manager_id: int, db: Session):
     """
     Fetch all employees under a specific manager where password_set is True
+    Returns all feedback statuses for each employee
     """
     try:
         # Check if manager exists
@@ -416,26 +406,24 @@ async def get_employees(manager_id: int, db: Session):
             Employee.password_set == True
         ).all()
         
-        # Count feedback for each employee
         employees_with_feedback = []
         for emp in employees:
-            feedback_count = db.query(Feedback).filter(
+            # Get all feedback for this employee
+            feedbacks = db.query(Feedback).filter(
                 Feedback.manager_id == manager_id,
                 Feedback.employee_id == emp.id
-            ).count()
-            latest_feedback = db.query(Feedback.status).filter(
-                Feedback.manager_id == manager_id,
-                Feedback.employee_id == emp.id
-            ).order_by(Feedback.created_at.desc()).first()
+            ).order_by(Feedback.created_at.desc()).all()
             
-            status = latest_feedback[0].value if latest_feedback else None
+            # Collect all statuses
+            feedback_statuses = [fb.status.value.upper() for fb in feedbacks]
+            feedback_count = len(feedbacks)
             
             employees_with_feedback.append({
                 "id": emp.id,
                 "full_name": emp.full_name,
                 "email": emp.email,
                 "feedback_count": feedback_count,
-                "feedback_status": status
+                "feedback_statuses": feedback_statuses
             })
         
         return {
