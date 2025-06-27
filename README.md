@@ -63,21 +63,5 @@ A high-performance backend service for Feedback Central built with FastAPI and P
    ```bash
    uvicorn app.main:app --reload
 
-feedbackcentral-backend/
-├── app/                  # Application core
-│   ├── controllers/      # Business logic
-│   ├── database/         # DB models & connections
-│   ├── routes/           # API endpoints
-│   ├── schema/           # Pydantic models
-│   └── __init__.py
-├── migrations/           # Database migrations
-├── config.py             # Application configuration
-├── logger.py             # Logging configuration
-├── main.py               # Application entry point
-├── requirements.txt      # Dependencies
-├── Dockerfile            # Docker configuration
-└── docker-compose.yml    # Container orchestration
 
 Built with ❤️ using FastAPI and Python
-
-  
