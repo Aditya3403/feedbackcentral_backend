@@ -43,9 +43,6 @@ A high-performance backend service for Feedback Central built with FastAPI and P
 
 4. **Configure environment**
    ```bash
-    MONGO_URI=mongodb://localhost:27017
-    DB_NAME=feedback_central
-
     EMAIL_FROM=your-email@gmail.com
     EMAIL_FROM_NAME=FeedbackCentral
 
@@ -62,6 +59,5 @@ A high-performance backend service for Feedback Central built with FastAPI and P
 3. **Start the server**
    ```bash
    uvicorn app.main:app --reload
-
 
 Built with ❤️ using FastAPI and Python
