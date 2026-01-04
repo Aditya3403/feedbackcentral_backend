@@ -30,3 +30,19 @@
 2025-06-27 12:46:41 - app.controllers.user_controller - ERROR - Error adding employee: 
 2025-06-27 12:47:45 - app.controllers.user_controller - INFO - Invitation email sent successfully to 211325@juitsolan.in
 2025-06-27 16:00:42 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityamakesyouclick@gmail.com
+2025-06-27 17:46:45 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-27 17:46:56 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-27 18:03:48 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityabansal3403@gmail.com
+2025-06-27 18:03:48 - app.controllers.user_controller - ERROR - Error adding employee: 
+2025-06-27 18:18:18 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityabansal3403@gmail.com
+2025-06-27 18:28:20 - app.controllers.user_controller - INFO - Invitation email sent successfully to skillf865@gmail.com
+2025-06-27 18:33:41 - app.controllers.user_controller - INFO - Invitation email sent successfully to 211325@juitsolan.in
+2025-06-27 21:06:02 - app.controllers.user_controller - INFO - Invitation email sent successfully to justforfunemail34@gmail.com
+2025-06-27 21:06:40 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:06:40 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:06:50 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:06:50 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:10:18 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:10:18 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:33:24 - app.controllers.user_controller - ERROR - Error fetching employees for manager 2: 
+2025-06-27 21:42:23 - app.controllers.user_controller - INFO - Invitation email sent successfully to adityamakesyouclick@gmail.com
