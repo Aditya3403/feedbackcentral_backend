@@ -15,6 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def root():
+    return {"status": "ok"}
 
 app.include_router(user_routes.router)
 app.include_router(feedback_routes.router)
